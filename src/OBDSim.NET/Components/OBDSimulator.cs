@@ -7,6 +7,48 @@ public sealed class OBDSimulator : IDisposable
   private readonly SerialPort _serialPort;
   private readonly ILogger<OBDSimulator> _logger;
 
+  /// <summary>
+  /// How much randomisation to apply as a percentage [0-100]
+  /// of the nominal value
+  /// </summary>
+  public int JitterPercent { get; set; } = 6;
+
+  /// <summary>
+  /// Speed in km/hr [0 - 255]
+  /// </summary>
+  public uint Speed { get; set; } = 50;
+
+  /// <summary>
+  /// Engine coolant temperature in deg Celsius [-40 - 215]
+  /// </summary>
+  public int EngineTemperature { get; set; } = 75;
+
+  /// <summary>
+  /// Engine speed in RPM [0 -  16,383.75]
+  /// </summary>
+  public uint RPM { get; set; } = 900;
+
+  /// <summary>
+  /// Throttle position in percent [0 - 100]
+  /// </summary>
+  public uint ThrottlePosition { get; set; } = 15;
+
+  /// <summary>
+  /// Calculated engine load in percent [0 - 100]
+  /// </summary>
+  public uint CalculatedEngineLoadValue { get; set; } = 20;
+
+  /// <summary>
+  /// Fuel pressure in kPa [0 - 765]
+  /// </summary>
+  public uint FuelPressure { get; set; } = 540;
+
+  /// <summary>
+  /// Monitor status since DTCs cleared.
+  /// True if MIL is ON; False if MIL is off.
+  /// </summary>
+  public bool MalfunctionIndicatorLamp { get; set; } = false;
+
   public OBDSimulator(string port, ILogger<OBDSimulator> logger)
   {
     _logger = logger;
@@ -35,7 +77,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
   {
-    var sp = (SerialPort)sender;
+    var sp = (SerialPort) sender;
     var inData = sp.ReadExisting();
     _logger.LogInformation($"--> {inData}");
   }
