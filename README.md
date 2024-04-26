@@ -59,3 +59,8 @@ Use com0com (somehow)
 
  </details>
 
+## Acknowledgments
+* OBD
+  * [Get OBD2 Data via ELM327 C#.NET](https://burak.alakus.net/en/2011/07/27/to-get-obd2-data-via-elm327-c/)
+  * [OBD2NET](https://github.com/0x8DEADF00D/obd2NET)
+  * [OBD-II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
