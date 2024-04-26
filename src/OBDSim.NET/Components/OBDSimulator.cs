@@ -5,13 +5,16 @@ using System.IO.Ports;
 public sealed class OBDSimulator : IDisposable
 {
   private readonly SerialPort _serialPort;
+  private readonly ILogger<OBDSimulator> _logger;
 
-  public OBDSimulator(string port)
+  public OBDSimulator(string port, ILogger<OBDSimulator> logger)
   {
-    Console.WriteLine("Available Ports:");
+    _logger = logger;
+
+    _logger.LogInformation("Available Ports:");
     foreach (var s in SerialPort.GetPortNames())
     {
-      Console.WriteLine($"   {s}");
+      _logger.LogInformation($"   {s}");
     }
 
     _serialPort = new SerialPort(port)
@@ -27,14 +30,14 @@ public sealed class OBDSimulator : IDisposable
 
     _serialPort.Open();
 
-    Console.WriteLine($"Opened port: {port}");
+    _logger.LogInformation($"Opened port: {port}");
   }
 
   private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
   {
     var sp = (SerialPort)sender;
     var inData = sp.ReadExisting();
-    Console.WriteLine($"--> {inData}");
+    _logger.LogInformation($"--> {inData}");
   }
 
   public void Dispose()
