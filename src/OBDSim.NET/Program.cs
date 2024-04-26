@@ -7,9 +7,11 @@ public class Program
   public static void Main(string[] args)
   {
     var builder = WebApplication.CreateBuilder(args);
+    var cfg = builder.Configuration;
 
     // Add services to the container.
     builder.Services
+      .AddSingleton(new OBDSimulator(cfg["OBD:Port"]))
       .AddRazorComponents()
       .AddInteractiveServerComponents();
 
