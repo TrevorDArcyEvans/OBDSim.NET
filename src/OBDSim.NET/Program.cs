@@ -11,7 +11,10 @@ public class Program
 
     // Add services to the container.
     builder.Services
-      .AddSingleton(new OBDSimulator(cfg["OBD:Port"]))
+      .AddSingleton(() =>
+      {
+        return new OBDSimulator(cfg["OBD:Port"]);
+      })
       .AddRazorComponents()
       .AddInteractiveServerComponents();
 
