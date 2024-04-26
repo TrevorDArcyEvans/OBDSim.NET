@@ -109,6 +109,87 @@ public sealed class OBDSimulator : IDisposable
     var sp = (SerialPort) sender;
     var inData = sp.ReadExisting();
     _logger.LogInformation($"--> {inData}");
+
+    if (inData.Length != 4)
+    {
+      return;
+    }
+
+    SendResponse(inData);
+  }
+
+  private void SendResponse(string inData)
+  {
+    var pidStr = inData.Substring(2, 2);
+    var pid = (PID) Convert.FromHexString(pidStr).Single();
+    switch (pid)
+    {
+      case PID.Unknown:
+        break;
+
+      case PID.MIL:
+        SendMIL();
+        break;
+
+      case PID.Speed:
+        SendSpeed();
+        break;
+      
+      case PID.EngineTemperature:
+        SendEngineTemperature();
+        break;
+      
+      case PID.RPM:
+         SendRPM();
+       break;
+      
+      case PID.ThrottlePosition:
+         SendThrottlePosition();
+       break;
+      
+      case PID.CalculatedEngineLoadValue:
+        SendCalculatedEngineLoadValue();
+        break;
+      
+      case PID.FuelPressure:
+         SendFuelPressure();
+       break;
+    }
+  }
+
+  private void SendMIL()
+  {
+    throw new NotImplementedException();
+  }
+
+  private void SendSpeed()
+  {
+    throw new NotImplementedException();
+  }
+
+  private void SendEngineTemperature()
+  {
+    throw new NotImplementedException();
+  }
+
+  private void SendRPM()
+  {
+    throw new NotImplementedException();
+  }
+  
+  private void SendThrottlePosition()
+  {
+    throw new NotImplementedException();
+  }
+
+  private void SendCalculatedEngineLoadValue()
+  {
+    throw new NotImplementedException();
+  }
+
+  private void SendFuelPressure()
+  {
+    throw new NotImplementedException();
   }
 
   public void Dispose()
