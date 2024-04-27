@@ -159,37 +159,64 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendMIL()
   {
-    throw new NotImplementedException();
+    var dataA = (MalfunctionIndicatorLamp ? 128 : 127).ToString("x2");
+    var dataB = 112.ToString("x2");
+    var dataC = 157.ToString("x2");
+    var dataD = 32.ToString("x2");
+    var dataStr = $"\n01 01 {dataA} {dataB} {dataC} {dataD} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   private void SendSpeed()
   {
-    throw new NotImplementedException();
+    var dataA = Speed.ToString("x2");
+    var dataStr = $"\n01 0d {dataA} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   private void SendEngineTemperature()
   {
-    throw new NotImplementedException();
+    var dataA = (EngineTemperature + 40).ToString("x2");
+    var dataStr = $"\n01 05 {dataA} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   private void SendRPM()
   {
-    throw new NotImplementedException();
+    var rpmA = RPM / 64;
+    var rpmB = RPM * 4 - 256 * rpmA;
+    var rpmAstr = rpmA.ToString("x2");
+    var rpmBstr = rpmB.ToString("x2");
+    var dataStr = $"\n01 0c {rpmAstr} {rpmBstr} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
   
   private void SendThrottlePosition()
   {
-    throw new NotImplementedException();
+    var expStr = ((int)Math.Round(ThrottlePosition / 100d * 255d)).ToString("x2");
+    var dataStr = $"\n01 11 {expStr} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   private void SendCalculatedEngineLoadValue()
   {
-    throw new NotImplementedException();
+    var expStr = ((int)Math.Round(CalculatedEngineLoadValue / 100d * 255d)).ToString("x2");
+    var dataStr = $"\n01 04 {expStr} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   private void SendFuelPressure()
   {
-    throw new NotImplementedException();
+    var dataA = ((int)Math.Round(FuelPressure / 3d)).ToString("x2");
+    var dataStr = $"\n01 0a {dataA} \r\n>";
+    
+    _serialPort.Write(dataStr);
   }
 
   public void Dispose()
