@@ -8,8 +8,9 @@ public sealed class OBDSimulator : IDisposable
   private readonly ILogger<OBDSimulator> _logger;
 
   /// <summary>
-  /// How much randomisation to apply as a percentage [0-100]
-  /// of the nominal value
+  /// How much randomisation (+/-) to apply as a percentage [0-100]
+  /// of the nominal value.  Output value will be over a spread of
+  /// 2x JitterPercent.
   /// </summary>
   public int JitterPercent { get; set; } = 6;
 
