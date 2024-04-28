@@ -1,5 +1,6 @@
 namespace OBDSim.NET;
 
+using MatBlazor;
 using OBDSim.NET.Components;
 
 public class Program
@@ -10,6 +11,7 @@ public class Program
     var cfg = builder.Configuration;
 
     // Add services to the container.
+    builder.Services.AddMatBlazor();
     builder.Services
       .AddSingleton<OBDSimulatorFactory>()
       .AddRazorComponents()
