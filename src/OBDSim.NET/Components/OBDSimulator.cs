@@ -107,55 +107,75 @@ public sealed class OBDSimulator : IDisposable
 
   private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
   {
-    var sp = (SerialPort) sender;
+    var sp = (SerialPort)sender;
     var inData = sp.ReadExisting();
     _logger.LogInformation($"--> {inData}");
-
-    if (inData.Length != 4)
-    {
-      return;
-    }
 
     SendResponse(inData);
   }
 
   private void SendResponse(string inData)
   {
-    var pidStr = inData.Substring(2, 2);
-    var pid = (PID) Convert.FromHexString(pidStr).Single();
-    switch (pid)
+    switch (inData.ToUpperInvariant())
     {
-      case PID.Unknown:
+      // reset
+      case "ATZ":
+        SendReset();
         break;
 
-      case PID.MIL:
+      // PID.MIL
+      case "0101":
         SendMIL();
         break;
 
-      case PID.Speed:
+      // PID.Speed
+      case "010D":
         SendSpeed();
         break;
-      
-      case PID.EngineTemperature:
+
+      // PID.EngineTemperature
+      case "0105":
         SendEngineTemperature();
         break;
-      
-      case PID.RPM:
-         SendRPM();
-       break;
-      
-      case PID.ThrottlePosition:
-         SendThrottlePosition();
-       break;
-      
-      case PID.CalculatedEngineLoadValue:
+
+      // PID.RPM
+      case "010C":
+        SendRPM();
+        break;
+
+      // PID.ThrottlePosition
+      case "0111":
+        SendThrottlePosition();
+        break;
+
+      // PID.CalculatedEngineLoadValue
+      case "0104":
         SendCalculatedEngineLoadValue();
         break;
+
+      // PID.FuelPressure
+      case "010A":
+        SendFuelPressure();
+        break;
       
-      case PID.FuelPressure:
-         SendFuelPressure();
-       break;
+      default:
+        SendNoData();
+        break;
     }
+  }
+
+  private void SendNoData()
+  {
+    var dataStr = $"\nNO DATA \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  private void SendReset()
+  {
+    var dataStr = $"\nOBDSim.NET \r\n>";
+
+    _serialPort.Write(dataStr);
   }
 
   private void SendMIL()
@@ -165,7 +185,7 @@ public sealed class OBDSimulator : IDisposable
     var dataC = 157.ToString("x2");
     var dataD = 32.ToString("x2");
     var dataStr = $"\n01 01 {dataA} {dataB} {dataC} {dataD} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
@@ -173,7 +193,7 @@ public sealed class OBDSimulator : IDisposable
   {
     var dataA = Speed.ToString("x2");
     var dataStr = $"\n01 0d {dataA} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
@@ -181,7 +201,7 @@ public sealed class OBDSimulator : IDisposable
   {
     var dataA = (EngineTemperature + 40).ToString("x2");
     var dataStr = $"\n01 05 {dataA} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
@@ -192,15 +212,15 @@ public sealed class OBDSimulator : IDisposable
     var rpmAstr = rpmA.ToString("x2");
     var rpmBstr = rpmB.ToString("x2");
     var dataStr = $"\n01 0c {rpmAstr} {rpmBstr} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
-  
+
   private void SendThrottlePosition()
   {
     var expStr = ((int)Math.Round(ThrottlePosition / 100d * 255d)).ToString("x2");
     var dataStr = $"\n01 11 {expStr} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
@@ -208,7 +228,7 @@ public sealed class OBDSimulator : IDisposable
   {
     var expStr = ((int)Math.Round(CalculatedEngineLoadValue / 100d * 255d)).ToString("x2");
     var dataStr = $"\n01 04 {expStr} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
@@ -216,7 +236,7 @@ public sealed class OBDSimulator : IDisposable
   {
     var dataA = ((int)Math.Round(FuelPressure / 3d)).ToString("x2");
     var dataStr = $"\n01 0a {dataA} \r\n>";
-    
+
     _serialPort.Write(dataStr);
   }
 
