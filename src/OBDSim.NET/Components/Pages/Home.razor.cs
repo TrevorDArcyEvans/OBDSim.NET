@@ -11,7 +11,7 @@ public partial class Home
 
   protected override void OnInitialized()
   {
-    _obd = _obdFact.Create();
+    _obd = _obdFact.Instance;
 
     base.OnInitialized();
   }

@@ -2,18 +2,19 @@ namespace OBDSim.NET.Components;
 
 public sealed class OBDSimulatorFactory
 {
-  private readonly IConfiguration _cfg;
-  private readonly ILoggerFactory _logFact;
+  private static readonly object padlock = new();
+  private static OBDSimulator _instance;
 
   public OBDSimulatorFactory(IConfiguration cfg, ILoggerFactory logFact)
   {
-    _cfg = cfg;
-    _logFact = logFact;
+    lock (padlock)
+    {
+      if (_instance == null)
+      {
+        _instance = new OBDSimulator(cfg["OBD:Port"], logFact.CreateLogger<OBDSimulator>());
+      }
+    }
   }
 
-  public OBDSimulator Create()
-  {
-    var logger = _logFact.CreateLogger<OBDSimulator>();
-    return new OBDSimulator(_cfg["OBD:Port"], logger);
-  }
+  public OBDSimulator Instance => _instance;
 }
