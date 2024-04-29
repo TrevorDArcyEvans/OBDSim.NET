@@ -2,16 +2,64 @@
 
 <PageTitle>OBDSim.NET</PageTitle>
 
-<div>
-  <MatSlider TValue="decimal" ValueChanged="@OnValueChanged"></MatSlider>
+<div style="margin: 0 auto">
+  <MatH1>OBDSim.NET</MatH1>
 </div>
 
-@code
-{
+<div class="mat-layout-grid">
+  <div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.Speed" TValue="uint" Minimum="0" Maximum="255" Label="Speed (km/hr)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.Speed" TValue="uint" ValueMin="0" ValueMax="255"></MatSlider>
+    </div>
 
-  public void OnValueChanged(decimal val)
-  {
-    Console.WriteLine($"OnValueChanged: {val}");
-  }
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.RPM" TValue="uint" Minimum="0" Maximum="16383" Label="RPM"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.RPM" TValue="uint" ValueMin="0" ValueMax="16383"></MatSlider>
+    </div>
 
-}
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.EngineTemperature" TValue="int" Minimum="-40" Maximum="215" Label="Engine temp. (C)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.EngineTemperature" TValue="int" ValueMin="-40" ValueMax="215"></MatSlider>
+    </div>
+
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.ThrottlePosition" TValue="uint" Minimum="0" Maximum="100" Label="Throttle (%)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.ThrottlePosition" TValue="uint" ValueMin="0" ValueMax="100"></MatSlider>
+    </div>
+
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.CalculatedEngineLoadValue" TValue="uint" Minimum="0" Maximum="100" Label="Calc engine load (%)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.CalculatedEngineLoadValue" TValue="uint" ValueMin="0" ValueMax="100"></MatSlider>
+    </div>
+
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.FuelPressure" TValue="uint" Minimum="0" Maximum="765" Label="Fuel pressure (kPa)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.FuelPressure" TValue="uint" ValueMin="0" ValueMax="765"></MatSlider>
+    </div>
+
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+      <MatDivider></MatDivider>
+    </div>
+
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+      <MatNumericUpDownField @bind-Value="@_obd.JitterPercent" TValue="int" Minimum="0" Maximum="100" Label="Jitter (%)"></MatNumericUpDownField>
+    </div>
+    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+      <MatSlider @bind-Value="@_obd.JitterPercent" TValue="int" ValueMin="0" ValueMax="100"></MatSlider>
+    </div>
+
+  </div>
+</div>
