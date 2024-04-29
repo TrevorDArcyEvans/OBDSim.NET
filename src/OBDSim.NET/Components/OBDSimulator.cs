@@ -101,7 +101,7 @@ public sealed class OBDSimulator : IDisposable
 
     _serialPort.DataReceived += DataReceivedHandler;
 
-    //_serialPort.Open();
+    _serialPort.Open();
 
     _logger.LogInformation($"Opened port: {port}");
   }
