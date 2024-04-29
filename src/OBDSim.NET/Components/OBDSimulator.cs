@@ -1,6 +1,7 @@
 namespace OBDSim.NET.Components;
 
 using System.IO.Ports;
+using System.Numerics;
 
 public sealed class OBDSimulator : IDisposable
 {
@@ -100,7 +101,7 @@ public sealed class OBDSimulator : IDisposable
 
     _serialPort.DataReceived += DataReceivedHandler;
 
-    _serialPort.Open();
+    //_serialPort.Open();
 
     _logger.LogInformation($"Opened port: {port}");
   }
@@ -157,7 +158,7 @@ public sealed class OBDSimulator : IDisposable
       case "010A":
         SendFuelPressure();
         break;
-      
+
       default:
         SendNoData();
         break;
@@ -191,7 +192,8 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendSpeed()
   {
-    var dataA = Speed.ToString("x2");
+    var simVal = GetSimulatedValue<uint>(Speed, 0, 255);
+    var dataA = simVal.ToString("x2");
     var dataStr = $"\n01 0d {dataA} \r\n>";
 
     _serialPort.Write(dataStr);
@@ -199,7 +201,8 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendEngineTemperature()
   {
-    var dataA = (EngineTemperature + 40).ToString("x2");
+    var simVal = GetSimulatedValue<int>(EngineTemperature, -40, 215);
+    var dataA = (simVal + 40).ToString("x2");
     var dataStr = $"\n01 05 {dataA} \r\n>";
 
     _serialPort.Write(dataStr);
@@ -207,8 +210,9 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendRPM()
   {
-    var rpmA = RPM / 64;
-    var rpmB = RPM * 4 - 256 * rpmA;
+    var simVal = GetSimulatedValue<uint>(RPM, 0, 16383);
+    var rpmA = simVal / 64;
+    var rpmB = simVal * 4 - 256 * rpmA;
     var rpmAstr = rpmA.ToString("x2");
     var rpmBstr = rpmB.ToString("x2");
     var dataStr = $"\n01 0c {rpmAstr} {rpmBstr} \r\n>";
@@ -218,7 +222,8 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendThrottlePosition()
   {
-    var expStr = ((int)Math.Round(ThrottlePosition / 100d * 255d)).ToString("x2");
+    var simVal = GetSimulatedValue<uint>(ThrottlePosition, 0, 100);
+    var expStr = ((int)Math.Round(simVal / 100d * 255d)).ToString("x2");
     var dataStr = $"\n01 11 {expStr} \r\n>";
 
     _serialPort.Write(dataStr);
@@ -226,7 +231,8 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendCalculatedEngineLoadValue()
   {
-    var expStr = ((int)Math.Round(CalculatedEngineLoadValue / 100d * 255d)).ToString("x2");
+    var simVal = GetSimulatedValue<uint>(CalculatedEngineLoadValue, 0, 100);
+    var expStr = ((int)Math.Round(simVal / 100d * 255d)).ToString("x2");
     var dataStr = $"\n01 04 {expStr} \r\n>";
 
     _serialPort.Write(dataStr);
@@ -234,10 +240,25 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendFuelPressure()
   {
-    var dataA = ((int)Math.Round(FuelPressure / 3d)).ToString("x2");
+    var simVal = GetSimulatedValue<uint>(FuelPressure, 0, 765);
+    var dataA = ((int)Math.Round(simVal / 3d)).ToString("x2");
     var dataStr = $"\n01 0a {dataA} \r\n>";
 
     _serialPort.Write(dataStr);
+  }
+
+  private int RandomSign()
+  {
+    var num = Random.Shared.Next(-100, 100);
+    return num / Math.Abs(num);
+  }
+
+  private T GetSimulatedValue<T>(T nominal, T min, T max) where T : INumber<T>
+  {
+    var sign = RandomSign();
+    var raw = nominal + T.CreateChecked(sign * JitterPercent / 100d);
+    var clamped = T.Clamp(raw, min, max);
+    return clamped;
   }
 
   public void Dispose()
