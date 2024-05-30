@@ -5,7 +5,7 @@ using System.Numerics;
 
 public sealed class OBDSimulator : IDisposable
 {
-  private readonly SerialPort _serialPort;
+  private readonly IObdSerialPort _serialPort;
   private readonly ILogger<OBDSimulator> _logger;
 
   /// <summary>
@@ -80,7 +80,7 @@ public sealed class OBDSimulator : IDisposable
     FuelPressure = 0x0A
   };
 
-  public OBDSimulator(string port, ILogger<OBDSimulator> logger)
+  public OBDSimulator(IObdSerialPort serialPort, ILogger<OBDSimulator> logger)
   {
     _logger = logger;
 
@@ -90,34 +90,25 @@ public sealed class OBDSimulator : IDisposable
       _logger.LogInformation($"   {s}");
     }
 
-    _serialPort = new SerialPort(port)
-    {
-      BaudRate = 9600,
-      Parity = Parity.None,
-      StopBits = StopBits.One,
-      DataBits = 8,
-      Handshake = Handshake.None
-    };
+    _serialPort = serialPort;
 
     _serialPort.DataReceived += DataReceivedHandler;
 
     _serialPort.Open();
-
-    _logger.LogInformation($"Opened port: {port}");
   }
 
   private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
   {
     var sp = (SerialPort)sender;
     var inData = sp.ReadExisting();
-    _logger.LogInformation($"--> {inData}");
 
     SendResponse(inData);
   }
 
   private void SendResponse(string inData)
   {
-    switch (inData.ToUpperInvariant())
+    var trimData = inData.ToUpperInvariant().TrimEnd('\r', '\n');
+    switch (trimData)
     {
       // reset
       case "ATZ":
@@ -250,6 +241,7 @@ public sealed class OBDSimulator : IDisposable
   private int RandomSign()
   {
     var num = Random.Shared.Next(-100, 100);
+    num = num == 0 ? 1 : num;
     return num / Math.Abs(num);
   }
 

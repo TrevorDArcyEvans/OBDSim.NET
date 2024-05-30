@@ -11,7 +11,11 @@ public sealed class OBDSimulatorFactory
     {
       if (_instance == null)
       {
-        _instance = new OBDSimulator(cfg["OBD:Port"], logFact.CreateLogger<OBDSimulator>());
+        var comPort = cfg["OBD:Port"];
+        var baudRate = int.Parse(cfg["OBD:BaudRate"]);
+        var serialPort = new ObdSerialPort(comPort, baudRate, logFact.CreateLogger<ObdSerialPort>());
+
+        _instance = new OBDSimulator(serialPort, logFact.CreateLogger<OBDSimulator>());
       }
     }
   }
