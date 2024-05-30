@@ -7,12 +7,9 @@ public sealed class ObdSerialPort : IObdSerialPort
   private readonly SerialPort _serialPort;
   private readonly ILogger<ObdSerialPort> _logger;
 
-  public event SerialDataReceivedEventHandler DataReceived
-  {
-    add => _serialPort.DataReceived += value;
+  private string _readExisting = string.Empty;
 
-    remove => _serialPort.DataReceived -= value;
-  }
+  public event SerialDataReceivedEventHandler DataReceived;
 
   public ObdSerialPort(string comPort, int baudRate, ILogger<ObdSerialPort> logger)
   {
@@ -31,8 +28,9 @@ public sealed class ObdSerialPort : IObdSerialPort
   private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
   {
     var sp = (SerialPort)sender;
-    var inData = sp.ReadExisting();
-    _logger.LogInformation($">-- {inData}");
+    _readExisting = sp.ReadExisting();
+    _logger.LogInformation($">-- {_readExisting}");
+    DataReceived(this, e);
   }
 
   public void Open()
@@ -52,8 +50,15 @@ public sealed class ObdSerialPort : IObdSerialPort
 
   public void Write(string data)
   {
-    _logger.LogInformation($"--> {data}");
+    _logger.LogInformation($"--> {data.Replace("\r", "").Replace("\n", "")}");
     _serialPort.Write(data);
+  }
+
+  public string ReadExisting()
+  {
+    var retVal = _readExisting;
+    _readExisting = string.Empty;
+    return retVal;
   }
 
   public void Dispose()

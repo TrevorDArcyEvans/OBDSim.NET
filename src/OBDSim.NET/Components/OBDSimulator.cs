@@ -99,7 +99,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
   {
-    var sp = (SerialPort)sender;
+    var sp = (IObdSerialPort)sender;
     var inData = sp.ReadExisting();
 
     SendResponse(inData);
