@@ -115,6 +115,21 @@ public sealed class OBDSimulator : IDisposable
         SendReset();
         break;
 
+      case "ATE0": // echo OFF
+      case "ATH1": // headers ON
+      case "ATL0": // linefeeds OFF
+      case "ATSP0": // set auto protocol 
+        SendOK();
+        break;
+
+      case "ATI":
+        SendVersion();
+        break;
+
+      case "ATRV":
+        SendVoltage();
+        break;
+
       // PID.MIL
       case "0101":
         SendMIL();
@@ -156,6 +171,20 @@ public sealed class OBDSimulator : IDisposable
     }
   }
 
+  private void SendVoltage()
+  {
+    var dataStr = $"\n12.5V \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  private void SendVersion()
+  {
+    var dataStr = $"\nv1.0.0 \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
   private void SendNoData()
   {
     var dataStr = $"\nNO DATA \r\n>";
@@ -165,7 +194,15 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendReset()
   {
-    var dataStr = $"\nOBDSim.NET \r\n>";
+    // PyOBD looks for 'ELM' in response
+    var dataStr = $"\nOBDSim.NET (ELM Simulator)\r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  private void SendOK()
+  {
+    var dataStr = $"\nOK \r\n>";
 
     _serialPort.Write(dataStr);
   }
