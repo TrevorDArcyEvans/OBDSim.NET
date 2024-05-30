@@ -1,4 +1,7 @@
 # OBDSim.NET
+Simulating an OBD car connection from the comfort of your desk
+
+![](media/OBDSim.NET.png)
 
 ## Requirements
 * .NET 8 SDK
@@ -14,8 +17,31 @@
 * [com0com](https://com0com.sourceforge.net/)
 
 ### Optional
+* [Scantool](https://samhobbs.co.uk/2015/04/scantool-obdii-car-diagnostic-software-linux)
+  ```bash
+  sudo apt install -y scantool
+  ```
+  * [Scantool source](https://github.com/kees/scantool/tree/trunk)
 * [PuTTY](https://www.putty.org/)
+  <details>
+
+  ![](media/PuTTY.png)
+
+  </details>
+
 * [DrawIO](https://github.com/jgraph/drawio-desktop/releases)
+* [pyOBD](https://github.com/barracuda-fsh/pyobd)
+  <details>
+
+  `ImportError: cannot import name 'Self' from 'typing_extensions' (/usr/lib/python3/dist-packages/typing_extensions.py)`
+
+  https://github.com/python-openxml/python-docx/issues/1337
+
+  ```bash
+  pip install typing-extensions --upgrade
+  ```
+
+  </details>
 
 ## Getting started
 
@@ -41,12 +67,12 @@ Open [home page](https://localhost:5021/)
 <details>
 
   ```bash
+  sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyV2,echo=0,unlink-close=0,user=trevorde
+  sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyACM0,echo=0,unlink-close=0,user=trevorde
+
   sudo chmod 777 /dev/ttyV1
   sudo chmod 777 /dev/ttyV2
-
-       socat -d -d PTY,link=/dev/ttyV1,echo=0,raw,unlink-close=0,user=trevorde PTY,link=/dev/ttyV2,echo=0,raw,unlink-close=0,user=trevorde
-
-  sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyV2,echo=0,unlink-close=0,user=trevorde
+  sudo chmod 777 /dev/ttyACM0
   ```
 
  </details>
