@@ -9,24 +9,24 @@
 <div class="mat-layout-grid">
   <div class="mat-layout-grid-inner">
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-      <MatNumericUpDownField @bind-Value="@_obd.Speed" TValue="uint" Minimum="0" Maximum="255" Label="Speed (km/hr)"></MatNumericUpDownField>
+      <MatNumericUpDownField @bind-Value="@_obd.VehicleSpeed" TValue="uint" Minimum="0" Maximum="255" Label="Speed (km/hr)"></MatNumericUpDownField>
     </div>
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-      <MatSlider @bind-Value="@_obd.Speed" TValue="uint" ValueMin="0" ValueMax="255"></MatSlider>
+      <MatSlider @bind-Value="@_obd.VehicleSpeed" TValue="uint" ValueMin="0" ValueMax="255"></MatSlider>
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-      <MatNumericUpDownField @bind-Value="@_obd.RPM" TValue="uint" Minimum="0" Maximum="16383" Label="RPM"></MatNumericUpDownField>
+      <MatNumericUpDownField @bind-Value="@_obd.EngineSpeed" TValue="uint" Minimum="0" Maximum="16383" Label="RPM"></MatNumericUpDownField>
     </div>
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-      <MatSlider @bind-Value="@_obd.RPM" TValue="uint" ValueMin="0" ValueMax="16383"></MatSlider>
+      <MatSlider @bind-Value="@_obd.EngineSpeed" TValue="uint" ValueMin="0" ValueMax="16383"></MatSlider>
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-      <MatNumericUpDownField @bind-Value="@_obd.EngineTemperature" TValue="int" Minimum="-40" Maximum="215" Label="Engine temp. (C)"></MatNumericUpDownField>
+      <MatNumericUpDownField @bind-Value="@_obd.EngineCoolantTemperature" TValue="int" Minimum="-40" Maximum="215" Label="Engine temp. (C)"></MatNumericUpDownField>
     </div>
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-      <MatSlider @bind-Value="@_obd.EngineTemperature" TValue="int" ValueMin="-40" ValueMax="215"></MatSlider>
+      <MatSlider @bind-Value="@_obd.EngineCoolantTemperature" TValue="int" ValueMin="-40" ValueMax="215"></MatSlider>
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
@@ -37,10 +37,10 @@
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-      <MatNumericUpDownField @bind-Value="@_obd.CalculatedEngineLoadValue" TValue="uint" Minimum="0" Maximum="100" Label="Calc engine load (%)"></MatNumericUpDownField>
+      <MatNumericUpDownField @bind-Value="@_obd.CalculatedEngineLoad" TValue="uint" Minimum="0" Maximum="100" Label="Calc engine load (%)"></MatNumericUpDownField>
     </div>
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-      <MatSlider @bind-Value="@_obd.CalculatedEngineLoadValue" TValue="uint" ValueMin="0" ValueMax="100"></MatSlider>
+      <MatSlider @bind-Value="@_obd.CalculatedEngineLoad" TValue="uint" ValueMin="0" ValueMax="100"></MatSlider>
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
@@ -51,7 +51,7 @@
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-      <MatSlideToggle @bind-Value="@_obd.MalfunctionIndicatorLamp" Label="Malfunction Indicator Lamp (MIL)"></MatSlideToggle>
+      <MatSlideToggle @bind-Value="@_obd.DTCCount" Label="Malfunction Indicator Lamp (MIL)"></MatSlideToggle>
     </div>
 
     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">

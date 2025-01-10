@@ -16,19 +16,19 @@ public sealed class OBDSimulator : IDisposable
   public int JitterPercent { get; set; } = 6;
 
   /// <summary>
-  /// Speed in km/hr [0 - 255]
+  /// Vehicle speed in km/hr [0 - 255]
   /// </summary>
-  public uint Speed { get; set; } = 50;
+  public uint VehicleSpeed { get; set; } = 50;
 
   /// <summary>
   /// Engine coolant temperature in deg Celsius [-40 - 215]
   /// </summary>
-  public int EngineTemperature { get; set; } = 75;
+  public int EngineCoolantTemperature { get; set; } = 75;
 
   /// <summary>
   /// Engine speed in RPM [0 -  16,383.75]
   /// </summary>
-  public uint RPM { get; set; } = 900;
+  public uint EngineSpeed { get; set; } = 900;
 
   /// <summary>
   /// Throttle position in percent [0 - 100]
@@ -38,7 +38,7 @@ public sealed class OBDSimulator : IDisposable
   /// <summary>
   /// Calculated engine load in percent [0 - 100]
   /// </summary>
-  public uint CalculatedEngineLoadValue { get; set; } = 20;
+  public uint CalculatedEngineLoad { get; set; } = 20;
 
   /// <summary>
   /// Fuel pressure in kPa [0 - 765]
@@ -49,7 +49,7 @@ public sealed class OBDSimulator : IDisposable
   /// Monitor status since DTCs cleared.
   /// True if MIL is ON; False if MIL is off.
   /// </summary>
-  public bool MalfunctionIndicatorLamp { get; set; } = false;
+  public bool DTCCount { get; set; } = false;
 
   /// <summary>
   /// List of supported modes
@@ -70,14 +70,24 @@ public sealed class OBDSimulator : IDisposable
   public enum PID
   {
     Unknown = 0x0,
-    MIL = 0x01,
     DTCCount = 0x01,
-    Speed = 0x0D,
-    EngineTemperature = 0x05,
-    RPM = 0x0C,
+    FuelSystemStatus = 0x03,
+    CalculatedEngineLoad = 0x04,
+    EngineCoolantTemperature = 0x05,
+    ShortTermFuelTrim = 0x06,
+    LongTermFuelTrim = 0x07,
+    FuelPressure = 0x0A,
+    EngineSpeed = 0x0C,
+    VehicleSpeed = 0x0D,
+    TimingAdvance = 0x0E,
+    IntakeAirTemperature = 0x0F,
+    MassAirFlow = 0x10,
     ThrottlePosition = 0x11,
-    CalculatedEngineLoadValue = 0x04,
-    FuelPressure = 0x0A
+    OxygenSensorsPresent = 0x13,
+    OxygenSensor2 = 0x15,
+    OBDstandards = 0x1C,
+    RunTimeSinceEngineStart = 0x1F,
+    PIDsupported = 0x20,
   };
 
   public OBDSimulator(IObdSerialPort serialPort, ILogger<OBDSimulator> logger)
@@ -130,7 +140,10 @@ public sealed class OBDSimulator : IDisposable
         SendVoltage();
         break;
 
-      // PID.MIL
+      case "0100":
+        SendSupportedPIDs();
+        break;
+
       case "0101":
         SendMIL();
         break;
@@ -209,7 +222,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendMIL()
   {
-    var dataA = (MalfunctionIndicatorLamp ? 128 : 127).ToString("x2");
+    var dataA = (DTCCount ? 128 : 127).ToString("x2");
     var dataB = 112.ToString("x2");
     var dataC = 157.ToString("x2");
     var dataD = 32.ToString("x2");
@@ -220,7 +233,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendSpeed()
   {
-    var simVal = GetSimulatedValue<uint>(Speed, 0, 255);
+    var simVal = GetSimulatedValue<uint>(VehicleSpeed, 0, 255);
     var dataA = simVal.ToString("x2");
     var dataStr = $"\n01 0d {dataA} \r\n>";
 
@@ -229,7 +242,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendEngineTemperature()
   {
-    var simVal = GetSimulatedValue<int>(EngineTemperature, -40, 215);
+    var simVal = GetSimulatedValue<int>(EngineCoolantTemperature, -40, 215);
     var dataA = (simVal + 40).ToString("x2");
     var dataStr = $"\n01 05 {dataA} \r\n>";
 
@@ -238,7 +251,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendRPM()
   {
-    var simVal = GetSimulatedValue<uint>(RPM, 0, 16383);
+    var simVal = GetSimulatedValue<uint>(EngineSpeed, 0, 16383);
     var rpmA = simVal / 64;
     var rpmB = simVal * 4 - 256 * rpmA;
     var rpmAstr = rpmA.ToString("x2");
@@ -259,7 +272,7 @@ public sealed class OBDSimulator : IDisposable
 
   private void SendCalculatedEngineLoadValue()
   {
-    var simVal = GetSimulatedValue<uint>(CalculatedEngineLoadValue, 0, 100);
+    var simVal = GetSimulatedValue<uint>(CalculatedEngineLoad, 0, 100);
     var expStr = ((int)Math.Round(simVal / 100d * 255d)).ToString("x2");
     var dataStr = $"\n01 04 {expStr} \r\n>";
 
@@ -273,6 +286,51 @@ public sealed class OBDSimulator : IDisposable
     var dataStr = $"\n01 0a {dataA} \r\n>";
 
     _serialPort.Write(dataStr);
+  }
+
+  private void SendSupportedPIDs()
+  {
+    var simVal = GetSupportedPIDs();
+    var dataStr = $"\n01 00 {simVal} \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  public static string GetSupportedPIDs()
+  {
+    // response is 4 bytes ie 32 chars, but arrays are zero based,
+    // so we allocate 33 chars and ignore the first char
+    var data = new char[33];
+
+    for (var i = 0; i < data.Length; i++)
+    {
+      data[i] = '0';
+    }
+
+    data[(int)PID.DTCCount] = '1';
+    data[(int)PID.FuelSystemStatus] = '1';
+    data[(int)PID.CalculatedEngineLoad] = '1';
+    data[(int)PID.EngineCoolantTemperature] = '1';
+    data[(int)PID.EngineSpeed] = '1';
+    data[(int)PID.VehicleSpeed] = '1';
+    data[(int)PID.ThrottlePosition] = '1';
+
+    // remove leading char, so are now dealing with
+    // a one based array
+    data = data.Skip(1).ToArray();
+
+    var hexStr = string.Empty;
+
+    // 4 bytes in response
+    for (var i = 0; i < 4; i++)
+    {
+      // skip to each byte
+      var binStr = new string(data.Skip(i * 8).Take(8).ToArray());
+      var num = Convert.ToInt32(binStr, 2);
+      hexStr += num.ToString("X2");
+    }
+
+    return hexStr;
   }
 
   private int RandomSign()
