@@ -68,11 +68,14 @@ Open [home page](https://localhost:5021/)
 
   ```bash
   sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyV2,echo=0,unlink-close=0,user=trevorde
+
   sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyACM0,echo=0,unlink-close=0,user=trevorde
 
-  sudo chmod 777 /dev/ttyV1
-  sudo chmod 777 /dev/ttyV2
-  sudo chmod 777 /dev/ttyACM0
+  sudo chmod 777 /dev/ttyV1 && sudo chmod 777 /dev/ttyV2 && sudo chmod 777 /dev/ttyACM0
+
+  # pyobd
+  cd pyobd
+  python3 pyobd.py
   ```
 
  </details>
@@ -84,6 +87,11 @@ Open [home page](https://localhost:5021/)
 Use com0com (somehow)
 
  </details>
+
+## Further information
+  * [pythonOBD](https://python-obd.readthedocs.io/en/latest/)
+  * [ELM327 AT Commands](https://cdn.sparkfun.com/assets/c/8/e/3/4/521fade6757b7fd2768b4574.pdf)
+  * [OBD Now Terminal](https://glmsoftware.com/documentation/obdnowterminaluserguide.pdf)
 
 ## Acknowledgments
 * OBD
