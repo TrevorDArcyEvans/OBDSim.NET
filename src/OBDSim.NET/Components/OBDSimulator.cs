@@ -140,12 +140,17 @@ public sealed class OBDSimulator : IDisposable
         SendVoltage();
         break;
 
+      case "ATDPN":
+        SendDescribeProtocolByNumber();
+        break;
+
       case "0100":
         SendSupportedPIDs();
         break;
 
+      // PID.DTCCount
       case "0101":
-        SendMIL();
+        SendDTCCount();
         break;
 
       // PID.Speed
@@ -184,6 +189,14 @@ public sealed class OBDSimulator : IDisposable
     }
   }
 
+  private void SendDescribeProtocolByNumber()
+  {
+    // 6 -->  ISO 15765-4 (CAN 11/500)
+    var dataStr = $"\nA6 \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
   private void SendVoltage()
   {
     var dataStr = $"\n12.5V \r\n>";
@@ -220,7 +233,7 @@ public sealed class OBDSimulator : IDisposable
     _serialPort.Write(dataStr);
   }
 
-  private void SendMIL()
+  private void SendDTCCount()
   {
     var dataA = (DTCCount ? 128 : 127).ToString("x2");
     var dataB = 112.ToString("x2");
@@ -296,7 +309,7 @@ public sealed class OBDSimulator : IDisposable
     _serialPort.Write(dataStr);
   }
 
-  public static string GetSupportedPIDs()
+  private static string GetSupportedPIDs()
   {
     // response is 4 bytes ie 32 chars, but arrays are zero based,
     // so we allocate 33 chars and ignore the first char
