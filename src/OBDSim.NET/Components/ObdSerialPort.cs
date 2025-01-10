@@ -50,6 +50,7 @@ public sealed class ObdSerialPort : IObdSerialPort
 
   public void Write(string data)
   {
+    // strip off CR-LF for clarity
     _logger.LogInformation($"--> {data.Replace("\r", "").Replace("\n", "")}");
     _serialPort.Write(data);
   }
