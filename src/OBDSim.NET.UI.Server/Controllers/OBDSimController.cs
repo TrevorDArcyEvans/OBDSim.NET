@@ -6,6 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class OBDSimController : ControllerBase
 {
+  private readonly ILogger<OBDSimController> _logger;
+  private readonly OBDSimulator _obd;
+
+  public OBDSimController(OBDSimulatorFactory obdFact, ILogger<OBDSimController> logger)
+  {
+    _logger = logger;
+    _obd = obdFact.Instance;
+  }
+
   // GET: api/<OBDSimController>
   [HttpGet]
   public IEnumerable<string> Get()
