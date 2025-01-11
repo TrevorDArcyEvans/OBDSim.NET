@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Components;
-
 namespace OBDSim.NET.UI.Web.Components.Pages;
+
+using Microsoft.AspNetCore.Components;
 
 public partial class Home
 {
