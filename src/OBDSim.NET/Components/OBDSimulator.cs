@@ -148,6 +148,14 @@ public sealed class OBDSimulator : IDisposable
         SendSupportedPIDs();
         break;
 
+      case "0600":
+        SendNoSupportedPIDs_600();
+        break;
+
+      case "0900":
+        SendNoSupportedPIDs_900();
+        break;
+
       // PID.DTCCount
       case "0101":
         SendDTCCount();
@@ -305,6 +313,22 @@ public sealed class OBDSimulator : IDisposable
   {
     var simVal = GetSupportedPIDs();
     var dataStr = $"\n01 00 {simVal} \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  private void SendNoSupportedPIDs_600()
+  {
+    var simVal = "00000000";
+    var dataStr = $"\n06 00 {simVal} \r\n>";
+
+    _serialPort.Write(dataStr);
+  }
+
+  private void SendNoSupportedPIDs_900()
+  {
+    var simVal = "00000000";
+    var dataStr = $"\n09 00 {simVal} \r\n>";
 
     _serialPort.Write(dataStr);
   }
