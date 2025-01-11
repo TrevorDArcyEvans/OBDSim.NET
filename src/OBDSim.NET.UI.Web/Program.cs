@@ -1,7 +1,7 @@
-namespace OBDSim.NET;
+namespace OBDSim.NET.UI.Web;
 
 using MatBlazor;
-using OBDSim.NET.Components;
+using Components;
 
 public class Program
 {

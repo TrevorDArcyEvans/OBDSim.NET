@@ -1,4 +1,4 @@
-namespace OBDSim.NET.Components;
+namespace OBDSim.NET.UI.Web.Components;
 
 public sealed class OBDSimulatorFactory
 {

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBDSim.NET", "OBDSim.NET\OBDSim.NET.csproj", "{DD05EDB6-545D-4E0F-BF5C-1DC490C8F9CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBDSim.NET.UI.Web", "OBDSim.NET.UI.Web\OBDSim.NET.UI.Web.csproj", "{7C161C97-999C-4670-89D8-197DC8804B2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DD05EDB6-545D-4E0F-BF5C-1DC490C8F9CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD05EDB6-545D-4E0F-BF5C-1DC490C8F9CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD05EDB6-545D-4E0F-BF5C-1DC490C8F9CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C161C97-999C-4670-89D8-197DC8804B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C161C97-999C-4670-89D8-197DC8804B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C161C97-999C-4670-89D8-197DC8804B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C161C97-999C-4670-89D8-197DC8804B2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
