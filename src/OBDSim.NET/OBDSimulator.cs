@@ -1,7 +1,8 @@
-namespace OBDSim.NET.UI.Web.Components;
+namespace OBDSim.NET;
 
 using System.IO.Ports;
 using System.Numerics;
+using Microsoft.Extensions.Logging;
 
 public sealed class OBDSimulator : IDisposable
 {

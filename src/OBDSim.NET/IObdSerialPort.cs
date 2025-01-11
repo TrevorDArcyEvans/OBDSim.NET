@@ -1,4 +1,4 @@
-namespace OBDSim.NET.UI.Web.Components;
+namespace OBDSim.NET;
 
 using System.IO.Ports;
 

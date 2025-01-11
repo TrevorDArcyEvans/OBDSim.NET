@@ -1,6 +1,7 @@
-namespace OBDSim.NET.UI.Web.Components;
+namespace OBDSim.NET;
 
 using System.IO.Ports;
+using Microsoft.Extensions.Logging;
 
 public sealed class ObdSerialPort : IObdSerialPort
 {
