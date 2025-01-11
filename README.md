@@ -4,7 +4,7 @@ Simulating an OBD car connection from the comfort of your desk
 ![](media/OBDSim.NET.png)
 
 ## Requirements
-* .NET 8 SDK
+* .NET 9 SDK
 * git
 
 ### Linux
@@ -18,10 +18,17 @@ Simulating an OBD car connection from the comfort of your desk
 
 ### Optional
 * [Scantool](https://samhobbs.co.uk/2015/04/scantool-obdii-car-diagnostic-software-linux)
+  <details>
+
+  ![](media/ScanTool.png)
+
   ```bash
   sudo apt install -y scantool
   ```
   * [Scantool source](https://github.com/kees/scantool/tree/trunk)
+
+  </details>
+
 * [PuTTY](https://www.putty.org/)
   <details>
 
@@ -32,6 +39,8 @@ Simulating an OBD car connection from the comfort of your desk
 * [DrawIO](https://github.com/jgraph/drawio-desktop/releases)
 * [pyOBD](https://github.com/barracuda-fsh/pyobd)
   <details>
+
+  ![](media/pyOBD.png)
 
   `ImportError: cannot import name 'Self' from 'typing_extensions' (/usr/lib/python3/dist-packages/typing_extensions.py)`
 
@@ -54,7 +63,7 @@ cd OBDSim.NET/src
 dotnet build
 
 # run main app
-cd OBDSim.NET/bin/Debug/net8.0/
+cd OBDSim.NET/bin/Debug/net9.0/
 ./OBDSim.NET
 ```
 
@@ -62,18 +71,24 @@ Open [home page](https://localhost:5021/)
 
 ## Setting up serial ports
 
+By default, *OBDSim.NET* runs on `/dev/ttyV1`
+
 ### Linux
 
 <details>
 
   ```bash
+  # PuTTY --> /dev/ttyV2
   sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyV2,echo=0,unlink-close=0,user=trevorde
 
+  # pyobd
   sudo socat -d -d PTY,link=/dev/ttyV1,echo=0,unlink-close=0,user=trevorde PTY,link=/dev/ttyACM0,echo=0,unlink-close=0,user=trevorde
 
-  sudo chmod 777 /dev/ttyV1 && sudo chmod 777 /dev/ttyV2 && sudo chmod 777 /dev/ttyACM0
+  sudo chmod 777 /dev/ttyV1
+  sudo chmod 777 /dev/ttyV2
+  sudo chmod 777 /dev/ttyACM0
 
-  # pyobd
+  # pyobd --> /dev/ttyACM0
   cd pyobd
   python3 pyobd.py
   ```
